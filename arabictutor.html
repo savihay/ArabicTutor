@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לומדה לבוחן בערבית</title>
+    <!-- טעינת Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* הגדרת פונטים - Noto Sans Arabic לערבית ו-Inter לעברית */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* מבטיח שהטקסט בערבית יוצג כראוי */
+        [lang="ar"] {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            font-size: 2.5rem; /* גודל גדול וברור לערבית */
+            direction: rtl;
+        }
+        
+        /* סגנון לכרטיסייה פעילה */
+        .tab-btn.active {
+            border-color: #3b82f6; /* כחול */
+            color: #3b82f6;
+            background-color: #eff6ff; /* כחול בהיר רקע */
+        }
+        
+        /* סגנון בסיסי לכרטיסייה */
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* סגנון לכרטיס פלאש */
+        .flashcard {
+            min-height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        /* עיצוב התוכן של הכרטיס */
+        .card-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            background-color: #f3f4f6; /* אפור בהיר */
+            min-height: 250px;
+            transition: background-color 0.2s;
+        }
+        
+        .card-content:hover {
+            background-color: #e5e7eb; /* אפור קצת יותר כהה */
+        }
+
+        /* סגנון לכפתור הקראה */
+        .speak-btn {
+            background-color: #f97316; /* כתום */
+            color: white;
+        }
+        .speak-btn:hover {
+            background-color: #ea580c; /* כתום כהה */
+        }
+        .speak-btn:disabled {
+            background-color: #9ca3af; /* אפור */
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen pt-8 pb-12" dir="rtl">
+
+    <div class="container max-w-4xl mx-auto p-4 sm:p-6">
+        
+        <!-- כותרת ראשית -->
+        <header class="text-center mb-6">
+            <h1 class="text-4xl font-bold text-blue-800">לומדה לבוחן בערבית - שכבת ח'</h1>
+            <p class="text-lg text-gray-600 mt-2">תרגול אינטראקטיבי לחומר הבוחן</p>
+        </header>
+
+        <main class="bg-white rounded-lg shadow-xl overflow-hidden">
+            
+            <!-- לשוניות ניווט -->
+            <nav class="flex border-b border-gray-200">
+                <button id="tab-letters-btn" class="tab-btn active flex-1 py-4 px-2 font-semibold text-gray-700 border-b-4" onclick="showTab('letters')">
+                    <span class="text-xl">🔠</span>
+                    <span class="hidden sm:inline">תרגול אותיות</span>
+                </button>
+                <button id="tab-vocab-btn" class="tab-btn flex-1 py-4 px-2 font-semibold text-gray-500 border-b-4 border-transparent hover:text-blue-600" onclick="showTab('vocab')">
+                    <span class="text-xl">📚</span>
+                    <span class="hidden sm:inline">אוצר מילים</span>
+                </button>
+                <button id="tab-grammar-btn" class="tab-btn flex-1 py-4 px-2 font-semibold text-gray-500 border-b-4 border-transparent hover:text-blue-600" onclick="showTab('grammar')">
+                    <span class="text-xl">📝</span>
+                    <span class="hidden sm:inline">דקדוק (תא מרבוטה)</span>
+                </button>
+                <button id="tab-phrases-btn" class="tab-btn flex-1 py-4 px-2 font-semibold text-gray-500 border-b-4 border-transparent hover:text-blue-600" onclick="showTab('phrases')">
+                    <span class="text-xl">🗣️</span>
+                    <span class="hidden sm:inline">תרגום צירופים</span>
+                </button>
+            </nav>
+
+            <!-- תוכן הלשוניות -->
+            <div class="p-4 sm:p-8">
+
+                <!-- 1. לשונית תרגול אותיות -->
+                <div id="letters" class="tab-content">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">🔠 תרגול אותיות</h2>
+                    <p class="text-gray-600 mb-6">לחץ על הכרטיס כדי לראות את שם האות. השתמש בכפתורים כדי לעבור בין צורות הכתיבה של האותיות הנדרשות.</p>
+                    
+                    <!-- כרטיס פלאש לאותיות -->
+                    <div class="flashcard" onclick="flipCard('letter')">
+                        <div id="letter-card-content" class="card-content">
+                            <!-- תוכן האות יטען כאן -->
+                        </div>
+                    </div>
+                    
+                    <!-- כפתורי ניווט לאותיות -->
+                    <div class="flex justify-between mt-6">
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="prevCard('letter')">
+                            → הקודם
+                        </button>
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="nextCard('letter')">
+                            הבא ←
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. לשונית אוצר מילים -->
+                <div id="vocab" class="tab-content" style="display:none;">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">📚 אוצר מילים</h2>
+                    <p class="text-gray-600 mb-6">לחץ על הכרטיס כדי לראות את התרגום. השתמש בכפתור "החלף כיוון" כדי לתרגל מערבית לעברית או להיפך.</p>
+                    
+                    <!-- כרטיס פלאש לאוצר מילים -->
+                    <div class="flashcard" onclick="flipCard('vocab')">
+                        <div id="vocab-card-content" class="card-content">
+                            <!-- תוכן המילה יטען כאן -->
+                        </div>
+                    </div>
+
+                    <!-- כפתורי ניווט לאוצר מילים -->
+                    <div class="flex flex-wrap justify-between items-center mt-6 gap-4">
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="prevCard('vocab')">
+                            → הקודם
+                        </button>
+                        <button id="vocab-speak-btn" class="py-2 px-5 speak-btn font-semibold rounded-lg shadow-md transition">
+                            🔊 הקרא (ערבית)
+                        </button>
+                        <button class="py-2 px-5 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition" onclick="swapVocabDirection()">
+                            ⇅ החלף כיוון (כעת: עברית ← ערבית)
+                        </button>
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="nextCard('vocab')">
+                            הבא ←
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. לשונית דקדוק (תא מרבוטה) -->
+                <div id="grammar" class="tab-content" style="display:none;">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">📝 דקדוק: הוספת ة (תא מרבוטה)</h2>
+                    <p class="text-gray-600 mb-6">הפוך את המילה מזכר לנקבה על ידי הוספת <b>ة</b>. הקלד את תשובתך בתיבה ולחץ על "בדיקה".</p>
+                    
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <div class="mb-4">
+                            <span class="text-lg text-gray-700">מילה בזכר:</span>
+                            <div id="grammar-question" class="text-4xl font-bold text-blue-800 my-2" lang="ar" dir="rtl">
+                                <!-- שאלה תטען כאן -->
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="grammar-input" class="block text-lg text-gray-700 mb-2">הקלד את צורת הנקבה:</label>
+                            <input type="text" id="grammar-input" class="w-full p-3 border border-gray-300 rounded-lg text-2xl" lang="ar" dir="rtl" placeholder="הקלד כאן בערבית...">
+                        </div>
+
+                        <!-- משוב (נכון/לא נכון) -->
+                        <div id="grammar-feedback" class="h-8 text-lg font-semibold mb-4"></div>
+                        
+                        <!-- כפתורי בדיקה והמשך -->
+                        <div class="flex justify-between flex-wrap gap-3">
+                            <button class="py-2 px-6 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition" onclick="checkGrammarAnswer()">
+                                בדיקה
+                            </button>
+                            <button id="grammar-speak-question-btn" class="py-2 px-4 speak-btn font-semibold rounded-lg shadow-md transition">
+                                🔊 הקרא שאלה
+                            </button>
+                            <button id="grammar-speak-answer-btn" class="py-2 px-4 speak-btn font-semibold rounded-lg shadow-md transition" disabled>
+                                🔊 הקרא תשובה
+                            </button>
+                            <button id="grammar-next-btn" class="py-2 px-6 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="nextCard('grammar')" style="display:none;">
+                                הבא ←
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. לשונית תרגום צירופים -->
+                <div id="phrases" class="tab-content" style="display:none;">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">🗣️ תרגום צירופים</h2>
+                    <p class="text-gray-600 mb-6">תרגול תרגום הצירופים מדף התרגול. לחץ על הכרטיס כדי לראות את התרגום.</p>
+                    
+                    <!-- כרטיס פלאש לצירופים -->
+                    <div class="flashcard" onclick="flipCard('phrase')">
+                        <div id="phrase-card-content" class="card-content">
+                            <!-- תוכן הצירוף יטען כאן -->
+                        </div>
+                    </div>
+                    
+                    <!-- כפתורי ניווט לצירופים -->
+                    <div class="flex justify-between items-center mt-6">
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="prevCard('phrase')">
+                            → הקודם
+                        </button>
+                        <button id="phrase-speak-btn" class="py-2 px-5 speak-btn font-semibold rounded-lg shadow-md transition">
+                            🔊 הקרא (ערבית)
+                        </button>
+                        <button class="py-2 px-5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition" onclick="nextCard('phrase')">
+                            הבא ←
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        
+        <!-- קרדיט -->
+        <footer class="text-center text-gray-500 mt-8">
+            בהצלחה בבוחן!
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 0. מאגר קולות ופונקציית דיבור ---
+        let arabicVoices = [];
+
+        // פונקציה לטעינת קולות בערבית
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                arabicVoices = speechSynthesis.getVoices().filter(voice => voice.lang.startsWith('ar'));
+            }
+        }
+        
+        // טעינת הקולות
+        loadVoices();
+        if ('speechSynthesis' in window && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        // פונקציית ההקראה
+        function speakArabic(text) {
+            if (!'speechSynthesis' in window) {
+                console.warn('Speech synthesis not supported in this browser.');
+                return;
+            }
+            // עצירת הקראה קודמת אם קיימת
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // נסיון למצוא קול בערבית
+            if (arabicVoices.length > 0) {
+                utterance.voice = arabicVoices[0]; // שימוש בקול הערבי הראשון שנמצא
+            } else {
+                // אם לא נמצא קול ספציפי, מגדירים את השפה (fallback)
+                utterance.lang = 'ar-SA'; // ערבית (ערב הסעודית) כברירת מחדל
+            }
+            
+            utterance.rate = 0.9; // הקראה מעט איטית יותר לבהירות
+            speechSynthesis.speak(utterance);
+        }
+
+
+        // --- 1. מאגרי נתונים (לפי קובץ ה-PDF) ---
+
+        // נתונים לתרגול אותיות
+        const letterData = [
+            { n: 'אליף', f: ['ا'] },
+            { n: 'בא', f: ['ب', 'بـ', 'ـبـ', 'ـب'] },
+            { n: 'תא', f: ['ت', 'تـ', 'ـتـ', 'ـت'] },
+            { n: 'דאל', f: ['د'] },
+            { n: 'ואו', f: ['و'] },
+            { n: 'זאי', f: ['ز'] },
+            { n: 'רא', f: ['ر'] },
+            { n: 'יא', f: ['ي', 'يـ', 'ـيـ', 'ـي'] },
+            { n: 'נון', f: ['ن', 'نـ', 'ـنـ', 'ـن'] },
+            { n: 'הא', f: ['ه', 'هـ', 'ـهـ', 'ـه'] },
+            { n: 'כאף', f: ['ك', 'كـ', 'ـكـ', 'ـك'] },
+            { n: 'לאם', f: ['ل', 'لـ', 'ـلـ', 'ـل'] },
+            { n: 'מים', f: ['م', 'مـ', 'ـمـ', 'ـم'] },
+            { n: 'סין', f: ['س', 'سـ', 'ـسـ', 'ـس'] },
+            { n: 'שין', f: ['ش', 'شـ', 'ـشـ', 'ـش'] },
+            { n: 'פא', f: ['ف', 'فـ', 'ـفـ', 'ـف'] },
+            { n: 'קאף', f: ['ق', 'قـ', 'ـقـ', 'ـق'] },
+            { n: 'צאד', f: ['ص', 'صـ', 'ـصـ', 'ـص'] },
+            { n: 'דאד', f: ['ض', 'ضـ', 'ـضـ', 'ـض'] },
+            { n: 'עין', f: ['ع', 'عـ', 'ـعـ', 'ـع'] }
+        ];
+
+        // יצירת "חפיסת" כרטיסים שטוחה מצורות האותיות
+        let letterDeck = [];
+        letterData.forEach(letter => {
+            if (letter.f.length === 1) {
+                letterDeck.push({ front: `<span lang="ar">${letter.f[0]}</span>`, back: `${letter.n} (צורה יחידה)` });
+            } else if (letter.f.length === 2) {
+                letterDeck.push({ front: `<span lang="ar">${letter.f[0]}</span>`, back: `${letter.n} (נפרדת / סופית)` });
+                letterDeck.push({ front: `<span lang="ar">${letter.f[1]}</span>`, back: `${letter.n} (תחילית / אמצעית)` });
+            } else if (letter.f.length === 4) {
+                letterDeck.push({ front: `<span lang="ar">${letter.f[0]}</span>`, back: `${letter.n} (נפרדת)` });
+                letterDeck.push({ front: `<span lang="ar">${letter.f[1]}</span>`, back: `${letter.n} (תחילית)` });
+                letterDeck.push({ front: `<span lang="ar">${letter.f[2]}</span>`, back: `${letter.n} (אמצעית)` });
+                letterDeck.push({ front: `<span lang="ar">${letter.f[3]}</span>`, back: `${letter.n} (סופית)` });
+            }
+        });
+
+        // נתונים לאוצר מילים
+        let vocabData = [
+            { he: 'ילד', ar: 'وَلَد' },
+            { he: 'ילדים', ar: 'أَوْلَاد' },
+            { he: 'בת/ילדה', ar: 'بِنْت' },
+            { he: 'בנות', ar: 'بَنَات' },
+            { he: 'אב', ar: 'أَب' },
+            { he: 'אם', ar: 'أُمّ' },
+            { he: 'דרוזי', ar: 'دُرْزِيّ' },
+            { he: 'מדינה', ar: 'دَوْلَة' },
+            { he: 'מנהל', ar: 'مُدِير' },
+            { he: 'עיר', ar: 'مَدِينَة' },
+            { he: 'תלמיד', ar: 'تِلْمِيذ' },
+            { he: 'חנות', ar: 'دُكَّان' },
+            { he: 'בית ספר', ar: 'مَدْرَسَة' },
+            { he: 'גן', ar: 'بُسْتَان' },
+            { he: 'שם', ar: 'إِسْم' },
+            { he: 'משפחה', ar: 'أُسْرَة' },
+            { he: 'מורה', ar: 'مُعَلِّم' },
+            { he: 'שפה', ar: 'لُغَة' },
+            { he: 'אורח', ar: 'ضَيْف' },
+            { he: 'אני', ar: 'أَنَا' },
+            { he: 'הוא', ar: 'هُوَ' },
+            { he: 'היא', ar: 'هِيَ' },
+            { he: 'הגיע', ar: 'وَصَلَ' },
+            { he: 'הגיעה', ar: 'وَصَلَتْ' },
+            { he: 'נסע', ar: 'سَافَرَ' },
+            { he: 'קרוב ל', ar: 'قَرِيب مِن' },
+            { he: 'קדוש', ar: 'مُقَدَّس' },
+            { he: 'גדול', ar: 'كَبِير' },
+            { he: 'מצוין', ar: 'مُمْتَاز' },
+            { he: 'יהודי', ar: 'يَهُودِيّ' },
+            { he: 'ערבי', ar: 'عَرَبِيّ' },
+            { he: 'מוסלמי', ar: 'مُسْلِم' },
+            { he: 'לבנוני', ar: 'لُبْنَانِيّ' },
+            { he: 'מ...', ar: 'مِن' },
+            { he: 'ב...', ar: 'فِي' },
+            { he: 'אל', ar: 'إِلَى' },
+            { he: 'ו...', ar: 'وَ' },
+            { he: 'איפה/היכן', ar: 'أَيْنَ' },
+            { he: 'למה/מדוע', ar: 'لِمَاذَا' },
+            { he: 'איזה', ar: 'أَيّ' }
+        ];
+
+        // נתונים לדקדוק (תא מרבוטה)
+        const grammarData = [
+            { m: 'مُمْتَاز', f: 'مُمْتَازَة' },
+            { m: 'عَرَبِيّ', f: 'عَرَبِيَّة' },
+            { m: 'لُبْنَانِيّ', f: 'لُبْنَانِيَّة' },
+            { m: 'مُسْلِم', f: 'مُسْلِمَة' },
+            { m: 'كَبِير', f: 'كَبِيرَة' },
+            { m: 'يَهُودِيّ', f: 'يَهُودِيَّة' },
+            { m: 'مُعَلِّم', f: 'مُعَلِّمَة' },
+            { m: 'تِلْمِيذ', f: 'تِلْمِيذَة' },
+            { m: 'مُدِير', f: 'مُدِيرَة' }
+        ];
+        
+        // נתונים לצירופים
+        const phraseData = [
+            { he: 'ירושלים הקדושה', ar: 'أُورْشَلِيم الْقُدْس' },
+            { he: 'עיר קדושה', ar: 'مَدِينَة مُقَدَّسَة' },
+            { he: 'קרוב לבית הספר', ar: 'قَرِيب مِن ٱلْمَدْرَسَة' },
+            { he: 'הילדים נסעו', ar: 'سَافَرَ ٱلْأَوْلَاد' }
+        ];
+
+
+        // --- 2. משתני מצב גלובליים ---
+        let currentIndices = {
+            letter: 0,
+            vocab: 0,
+            grammar: 0,
+            phrase: 0
+        };
+        let isFlipped = {
+            letter: false,
+            vocab: false,
+            phrase: false
+        };
+        let vocabDirectionHeToAr = true;
+
+        // --- 3. DOM References (קישורים לאלמנטים ב-HTML) ---
+        
+        const tabs = {
+            letters: document.getElementById('letters'),
+            vocab: document.getElementById('vocab'),
+            grammar: document.getElementById('grammar'),
+            phrases: document.getElementById('phrases')
+        };
+        
+        const tabButtons = {
+            letters: document.getElementById('tab-letters-btn'),
+            vocab: document.getElementById('tab-vocab-btn'),
+            grammar: document.getElementById('tab-grammar-btn'),
+            phrases: document.getElementById('tab-phrases-btn')
+        };
+
+        const cardContents = {
+            letter: document.getElementById('letter-card-content'),
+            vocab: document.getElementById('vocab-card-content'),
+            phrase: document.getElementById('phrase-card-content')
+        };
+
+        const grammar = {
+            question: document.getElementById('grammar-question'),
+            input: document.getElementById('grammar-input'),
+            feedback: document.getElementById('grammar-feedback'),
+            nextBtn: document.getElementById('grammar-next-btn'),
+            speakQuestionBtn: document.getElementById('grammar-speak-question-btn'),
+            speakAnswerBtn: document.getElementById('grammar-speak-answer-btn')
+        };
+
+        const vocabSpeakBtn = document.getElementById('vocab-speak-btn');
+        const phraseSpeakBtn = document.getElementById('phrase-speak-btn');
+        const vocabSwapBtn = document.querySelector('[onclick="swapVocabDirection()"]');
+
+        // --- 4. פונקציות עזר ---
+
+        // פונקציה להחלפת לשוניות
+        window.showTab = (tabId) => {
+            Object.values(tabs).forEach(tab => tab.style.display = 'none');
+            Object.values(tabButtons).forEach(btn => btn.classList.remove('active', 'text-blue-600', 'border-blue-500', 'bg-blue-50'));
+            tabs[tabId].style.display = 'block';
+            tabButtons[tabId].classList.add('active', 'text-blue-600', 'border-blue-500', 'bg-blue-50');
+        };
+
+        // פונקציה לערבוב מערך (Fisher-Yates shuffle)
+        const shuffle = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        };
+
+        // --- 5. לוגיקה של כרטיסי פלאש (אותיות, מילים, צירופים) ---
+        
+        const loadCard = (type) => {
+            let deck, data;
+            const index = currentIndices[type];
+
+            if (type === 'letter') {
+                deck = letterDeck;
+                data = deck[index];
+                cardContents.letter.innerHTML = data.front;
+            } else if (type === 'vocab') {
+                deck = vocabData;
+                data = deck[index];
+                const front = vocabDirectionHeToAr ? data.he : `<span lang="ar">${data.ar}</span>`;
+                const back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : data.he;
+                cardContents.vocab.innerHTML = `<span class="${vocabDirectionHeToAr ? '' : 'text-3xl'}">${front}</span>`;
+                cardContents.vocab.dataset.back = `<span class="${vocabDirectionHeToAr ? 'text-3xl' : ''}">${back}</span>`;
+            } else if (type === 'phrase') {
+                deck = phraseData;
+                data = deck[index];
+                cardContents.phrase.innerHTML = `<span class="text-3xl">${data.he}</span>`;
+                cardContents.phrase.dataset.back = `<span lang="ar" class="text-3xl">${data.ar}</span>`;
+            }
+            
+            isFlipped[type] = false;
+        };
+
+        window.flipCard = (type) => {
+            const card = cardContents[type];
+            const index = currentIndices[type];
+            let data, front, back;
+
+            if (type === 'letter') {
+                data = letterDeck[index];
+                front = data.front;
+                back = `<span class="text-3xl">${data.back}</span>`;
+            } else if (type === 'vocab') {
+                data = vocabData[index];
+                front = vocabDirectionHeToAr ? data.he : `<span lang="ar">${data.ar}</span>`;
+                back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : data.he;
+                card.innerHTML = `<span class="${vocabDirectionHeToAr ? '' : 'text-3xl'}">${front}</span>`;
+                card.dataset.back = `<span class="${vocabDirectionHeToAr ? 'text-3xl' : ''}">${back}</span>`;
+            } else if (type === 'phrase') {
+                data = phraseData[index];
+                front = `<span class="text-3xl">${data.he}</span>`;
+                back = `<span lang="ar" class="text-3xl">${data.ar}</span>`;
+                card.dataset.back = back;
+            }
+
+            if (isFlipped[type]) {
+                if(type === 'letter') card.innerHTML = front;
+                else if (type === 'vocab') card.innerHTML = `<span class="${vocabDirectionHeToAr ? '' : 'text-3xl'}">${front}</span>`;
+                else card.innerHTML = front;
+            } else {
+                if(type === 'letter') card.innerHTML = back;
+                else if (type === 'vocab') card.innerHTML = card.dataset.back;
+                else card.innerHTML = card.dataset.back;
+            }
+            isFlipped[type] = !isFlipped[type];
+        };
+        
+        window.nextCard = (type) => {
+            const deckLength = (type === 'letter') ? letterDeck.length : (type === 'vocab') ? vocabData.length : (type === 'grammar') ? grammarData.length : phraseData.length;
+            currentIndices[type] = (currentIndices[type] + 1) % deckLength;
+            
+            if (type === 'grammar') loadGrammarQuestion();
+            else loadCard(type);
+        };
+        
+        window.prevCard = (type) => {
+            const deckLength = (type === 'letter') ? letterDeck.length : (type === 'vocab') ? vocabData.length : (type === 'grammar') ? grammarData.length : phraseData.length;
+            currentIndices[type] = (currentIndices[type] - 1 + deckLength) % deckLength;
+
+            if (type === 'grammar') loadGrammarQuestion();
+            else loadCard(type);
+        };
+
+        window.swapVocabDirection = () => {
+            vocabDirectionHeToAr = !vocabDirectionHeToAr;
+            const directionText = vocabDirectionHeToAr ? "עברית ← ערבית" : "ערבית ← עברית";
+            vocabSwapBtn.textContent = `⇅ החלף כיוון (כעת: ${directionText})`;
+            loadCard('vocab');
+        };
+
+        // --- 6. לוגיקה של תרגול דקדוק ---
+
+        const loadGrammarQuestion = () => {
+            const index = currentIndices.grammar;
+            const question = grammarData[index];
+            grammar.question.textContent = question.m;
+            grammar.input.value = '';
+            grammar.feedback.textContent = '';
+            grammar.input.disabled = false;
+            grammar.nextBtn.style.display = 'none';
+            grammar.feedback.classList.remove('text-green-600', 'text-red-600');
+            // נטרול כפתור הקראת תשובה
+            grammar.speakAnswerBtn.disabled = true;
+            grammar.speakAnswerBtn.classList.add('speak-btn:disabled');
+        };
+
+        window.checkGrammarAnswer = () => {
+            const index = currentIndices.grammar;
+            const correctAnswer = grammarData[index].f;
+            const userAnswer = grammar.input.value.trim(); 
+
+            // הפעלת כפתור הקראת תשובה
+            grammar.speakAnswerBtn.disabled = false;
+            grammar.speakAnswerBtn.classList.remove('speak-btn:disabled');
+
+            if (userAnswer === correctAnswer) {
+                grammar.feedback.textContent = 'מעולה! תשובה נכונה.';
+                grammar.feedback.classList.add('text-green-600');
+                grammar.feedback.classList.remove('text-red-600');
+                grammar.input.disabled = true;
+                grammar.nextBtn.style.display = 'block';
+            } else {
+                grammar.feedback.textContent = `לא נכון. התשובה הנכונה היא: ${correctAnswer}.`;
+                grammar.feedback.classList.add('text-red-600');
+                grammar.feedback.classList.remove('text-green-600');
+                grammar.nextBtn.style.display = 'block';
+            }
+        };
+
+        // --- 7. אתחול הלומדה ---
+        
+        const initializeLomedah = () => {
+            shuffle(letterDeck);
+            shuffle(vocabData);
+            shuffle(grammarData);
+            shuffle(phraseData);
+
+            loadCard('letter');
+            loadCard('vocab');
+            loadGrammarQuestion();
+            loadCard('phrase');
+            
+            showTab('letters');
+
+            // הוספת event listeners
+            grammar.input.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    checkGrammarAnswer();
+                }
+            });
+
+            // האזנה לכפתורי הקראה
+            vocabSpeakBtn.addEventListener('click', () => {
+                const index = currentIndices.vocab;
+                speakArabic(vocabData[index].ar);
+            });
+
+            phraseSpeakBtn.addEventListener('click', () => {
+                const index = currentIndices.phrase;
+                speakArabic(phraseData[index].ar);
+            });
+
+            grammar.speakQuestionBtn.addEventListener('click', () => {
+                const index = currentIndices.grammar;
+                speakArabic(grammarData[index].m);
+            });
+
+            grammar.speakAnswerBtn.addEventListener('click', () => {
+                const index = currentIndices.grammar;
+                speakArabic(grammarData[index].f);
+            });
+        };
+
+        initializeLomedah();
+    });
+    </script>
+</body>
+</html>
+

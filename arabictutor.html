@@ -69,7 +69,9 @@
             background-color: #9ca3af; /* אפור */
             cursor: not-allowed;
         }
-
+        .hebrew-vocab {
+            font-size: 2em;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen pt-8 pb-12" dir="rtl">
@@ -286,7 +288,7 @@
             { n: 'דאל', f: ['د'] },
             { n: 'ואו', f: ['و'] },
             { n: 'זאי', f: ['ز'] },
-            { n: 'רא', f: ['ر'] },
+            { n: 'רא', f: ['ר'] },
             { n: 'יא', f: ['ي', 'يـ', 'ـيـ', 'ـي'] },
             { n: 'נון', f: ['ن', 'نـ', 'ـنـ', 'ـن'] },
             { n: 'הא', f: ['ه', 'هـ', 'ـهـ', 'ـه'] },
@@ -487,8 +489,8 @@
             } else if (type === 'vocab') {
                 deck = vocabData;
                 data = deck[index];
-                const front = vocabDirectionHeToAr ? data.he : `<span lang="ar">${data.ar}</span>`;
-                const back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : data.he;
+                const front = vocabDirectionHeToAr ? `<span class="hebrew-vocab">${data.he}</span>` : `<span lang="ar">${data.ar}</span>`;
+                const back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : `<span class="hebrew-vocab">${data.he}</span>`;
                 cardContents.vocab.innerHTML = `<span class="${vocabDirectionHeToAr ? '' : 'text-3xl'}">${front}</span>`;
                 cardContents.vocab.dataset.back = `<span class="${vocabDirectionHeToAr ? 'text-3xl' : ''}">${back}</span>`;
             } else if (type === 'phrase') {
@@ -512,8 +514,8 @@
                 back = `<span class="text-3xl">${data.back}</span>`;
             } else if (type === 'vocab') {
                 data = vocabData[index];
-                front = vocabDirectionHeToAr ? data.he : `<span lang="ar">${data.ar}</span>`;
-                back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : data.he;
+                front = vocabDirectionHeToAr ? `<span class="hebrew-vocab">${data.he}</span>` : `<span lang="ar">${data.ar}</span>`;
+                back = vocabDirectionHeToAr ? `<span lang="ar">${data.ar}</span>` : `<span class="hebrew-vocab">${data.he}</span>`;
                 card.innerHTML = `<span class="${vocabDirectionHeToAr ? '' : 'text-3xl'}">${front}</span>`;
                 card.dataset.back = `<span class="${vocabDirectionHeToAr ? 'text-3xl' : ''}">${back}</span>`;
             } else if (type === 'phrase') {
